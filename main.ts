@@ -1,5 +1,7 @@
-import { Application } from "jsr:@oak/oak/application";
-import { Router } from "jsr:@oak/oak/router";
+import _ from "lodash";
+import { Application } from "oak/application";
+import { Router } from "oak/router";
+import { config } from "./config.ts";
 
 const router = new Router();
 router.get("/", (ctx) => {

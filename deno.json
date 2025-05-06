@@ -1,8 +1,10 @@
 {
     "tasks": {
-        "dev": "deno run --watch main.ts"
+        "dev": "deno run --watch --allow-net main.ts"
     },
     "imports": {
-        "@fedify/fedify": "jsr:@fedify/fedify"
+        "@fedify/fedify": "jsr:@fedify/fedify",
+        "oak": "jsr:@oak/oak",
+        "lodash": "npm:lodash",
     }
 }
