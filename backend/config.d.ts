@@ -1,3 +1,3 @@
 export interface HonneamanoConfig {
-    listen_port: Number,
+    listen_port: number,
 }

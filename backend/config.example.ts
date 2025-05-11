@@ -1,4 +1,4 @@
-import { HonneamanoConfig } from "./config.d.ts";
+import { HonneamanoConfig } from "@src/config.d.ts";
 export const config: HonneamanoConfig = {
 ///////////////////////////////////////////////////////////////////////////////
 listen_port: 1987,
