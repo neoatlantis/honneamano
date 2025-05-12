@@ -3,7 +3,7 @@ import {
     FedifyFederationContext_t,
     FedifyKeyPair_t,
     FedifyActorCallbackSetter_t,
-} from "./_types.d.ts";
+} from "../_types.d.ts";
 import {
     exportJwk,
     generateCryptoKeyPair,
@@ -22,7 +22,7 @@ export default function setKeyPairsDispatcher(
 
     const kv = this.kv;
     this.actor_callback_setter.setKeyPairsDispatcher(async (_: any, identifier: any) => {
-        if (identifier !== "test") return [];
+        if (identifier !== "admin") return [];
         const entry = <unknown>await kv.get(["key"]) as FedifyKeyPair_t;
 
         if (entry == null || entry.value == null) {

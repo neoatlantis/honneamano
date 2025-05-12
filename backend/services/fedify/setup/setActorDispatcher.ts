@@ -3,7 +3,7 @@ import {
     FedifyFederationContext_t,
     FedifyKeyPair_t,
     FedifyActorCallbackSetter_t,
-} from "./_types.d.ts";
+} from "../_types.d.ts";
 import {
     Person,
     Endpoints,
@@ -28,12 +28,13 @@ export default function setActorDispatcher(
         // them is to provide a way to get the key pairs for the actor in various
         // formats:
         const keyPairs = await ctx.getActorKeyPairs(identifier);
+
         return new Person({
             id: ctx.getActorUri(identifier),
             name: "Fedify Admin",
             summary: "This is a Fedify Test Admin account.",
             preferredUsername: identifier,
-            url: new URL("/", ctx.url),
+            url: new URL(`/users/${identifier}`, ctx.url),
             inbox: ctx.getInboxUri(identifier),
             endpoints: new Endpoints({
                 sharedInbox: ctx.getInboxUri(),

@@ -10,6 +10,7 @@ export interface FedifyFederation_t {
     setKeyPairsDispatcher: any,
     setInboxListeners: (arg0: string, arg1: string)=>FedifyInboxListenerSetter_t,
     on: (arg0: any, arg1: ((x:any,y:any)=>any))=>any,
+    fetch: any,
 }
 
 

@@ -1,7 +1,7 @@
 import {
     FedifyFederation_t,
     FedifyFederationContext_t
-} from "./_types.d.ts";
+} from "../_types.d.ts";
 
 import {
     Accept,
@@ -19,17 +19,11 @@ import _ from "lodash";
 
 import setActorDispatcher from "./setActorDispatcher.ts";
 import setKeyPairsDispatcher from "./setKeyPairsDispatcher.ts";
-
-
-
-
-let federation_instance: FedifyFederation_t | null = null;
+import get_set_federation from "../federation.ts";
 
 
 
 export default async function setup_federation(){
-
-    if(!_.isNil(federation_instance)) return federation_instance;
 
     // use a Deno KV database for storing the list of followers and cache:
     const kv = await Deno.openKv();
@@ -39,6 +33,10 @@ export default async function setup_federation(){
     const federation = (<unknown> createFederation({
         kv: new DenoKvStore(kv),
     })) as FedifyFederation_t;
+
+    await get_set_federation(async function(){
+        return federation;
+    });
 
     const context: FedifyFederationContext_t = {
         federation,
@@ -59,7 +57,7 @@ export default async function setup_federation(){
             return;
         }
         const result = ctx.parseUri(follow.objectId);
-        if (result.type !== "actor" || result.identifier !== "demo") return;
+        if (result.type !== "actor" || result.identifier !== "admin") return;
         const follower = await follow.getActor(ctx);
         // Note that if a server receives a `Follow` activity, it should reply
         // with either an `Accept` or a `Reject` activity.  In this case, the
@@ -88,7 +86,4 @@ export default async function setup_federation(){
         }
     })
     ;
-
-    federation_instance = federation;
-    return federation;
 }
