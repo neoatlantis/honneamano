@@ -43,16 +43,15 @@ export default async function setup_federation(){
     const context: FedifyFederationContext_t = {
         federation,
         kv,
-    }
+        actor_callback_setter: null,
+    };
 
     setActorDispatcher.call(context);
     setKeyPairsDispatcher.call(context);
 
     // Registers the inbox listeners, which are responsible for handling
     // incoming activities in the inbox:
-    federation.setInboxListeners("/users/{identifier}/inbox", "/inbox");    
-
-    federation
+    federation.setInboxListeners("/users/{identifier}/inbox", "/inbox")
     // The `Follow` activity is handled by adding the follower to the
     // follower list:
     .on(Follow, async (ctx, follow) => {

@@ -1,6 +1,8 @@
 import {
     FedifyFederation_t,
-    FedifyFederationContext_t
+    FedifyFederationContext_t,
+    FedifyKeyPair_t,
+    FedifyActorCallbackSetter_t,
 } from "./_types.d.ts";
 import {
     exportJwk,
@@ -11,12 +13,18 @@ import {
 
 
 
-export default function setKeyPairsDispatcher(this: FedifyFederationContext_t){
-    const kv = this.kv;
+export default function setKeyPairsDispatcher(
+    this: FedifyFederationContext_t
+){
+    if(null === this.actor_callback_setter){
+        throw Error("Call setActorDispatcher first.");
+    }
 
-    this.federation.setKeyPairsDispatcher(async (_: any, identifier: any) => {
+    const kv = this.kv;
+    this.actor_callback_setter.setKeyPairsDispatcher(async (_: any, identifier: any) => {
         if (identifier !== "test") return [];
-        const entry = await kv.get<{ privateKey: JsonWebKey, publicKey: JsonWebKey }>(["key"]);
+        const entry = <unknown>await kv.get(["key"]) as FedifyKeyPair_t;
+
         if (entry == null || entry.value == null) {
             // Generate a new key pair at the first time:
             const { privateKey, publicKey } = await generateCryptoKeyPair("RSASSA-PKCS1-v1_5");
