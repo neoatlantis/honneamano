@@ -1,7 +1,7 @@
 {
     "tasks": {
-        "devnc": "deno run --watch --unstable-kv --unstable-temporal --allow-net --allow-env --allow-read --allow-sys main.ts",
-        "dev": "CONSOLA_LEVEL=999 deno run --check --watch --unstable-kv --unstable-temporal --allow-net --allow-env --allow-read --allow-sys main.ts",
+        "devnc": "deno run --watch --unstable-kv --unstable-temporal --allow-net --allow-env --allow-read --allow-write --allow-sys main.ts",
+        "dev": "CONSOLA_LEVEL=999 deno run --check --watch --unstable-kv --unstable-temporal --allow-net --allow-env --allow-read --allow-write --allow-sys main.ts",
         "test": "deno test --allow-net --allow-env main.ts"
     },
     "imports": {

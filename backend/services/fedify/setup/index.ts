@@ -23,10 +23,10 @@ import get_set_federation from "../federation.ts";
 
 
 
-export default async function setup_federation(){
+export default async function setup_federation(kvdb: string){
 
     // use a Deno KV database for storing the list of followers and cache:
-    const kv = await Deno.openKv();
+    const kv = await Deno.openKv(kvdb);
 
     // A `Federation` object is the main entry point of the Fedify framework.
     // It provides a set of methods to configure and run the federated server:

@@ -7,5 +7,6 @@ export interface HonneamanoMongoDBConfig {
 export interface HonneamanoConfig {
     listen_port: number,
 
+    kvdb: string,
     mongodb: HonneamanoMongoDBConfig,
 }

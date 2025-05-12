@@ -10,6 +10,7 @@ import {
     importJwk,
 } from "jsr:@fedify/fedify@1.5.1";
 
+import { user_exists } from "@src/services/users/lookup.ts";
 
 
 
@@ -22,7 +23,8 @@ export default function setKeyPairsDispatcher(
 
     const kv = this.kv;
     this.actor_callback_setter.setKeyPairsDispatcher(async (_: any, identifier: any) => {
-        if (identifier !== "admin") return [];
+        if(!(await user_exists(identifier))) return [];
+
         const entry = <unknown>await kv.get(["key"]) as FedifyKeyPair_t;
 
         if (entry == null || entry.value == null) {

@@ -1,0 +1,1 @@
+export const WEBUI_ROOT = "/web/";
