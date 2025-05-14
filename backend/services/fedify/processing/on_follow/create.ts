@@ -14,7 +14,7 @@ import {
 import { ensure_processing_kvdb } from "../index.ts";
 
 
-export async function create_processing_on_follow(follow: Follow){
+export async function create_processing_on_follow(ctx: any, follow: Follow){
     const kvdb = ensure_processing_kvdb();
 
     if (
@@ -31,6 +31,7 @@ export async function create_processing_on_follow(follow: Follow){
         type: "on_follow",
         status: "created",
         context: {
+            url: ctx.url,
             follow: follow_as_jsonld,
         },
     }
@@ -45,23 +46,3 @@ export async function create_processing_on_follow(follow: Follow){
 
     consola.info("New follow request recorded.");
 }
-
-
-        /*
-        const result = ctx.parseUri(follow.objectId);
-        if (result.type !== "actor" || result.identifier !== "admin") return;
-        const follower = await follow.getActor(ctx);
-        // Note that if a server receives a `Follow` activity, it should reply
-        // with either an `Accept` or a `Reject` activity.  In this case, the
-        // server automatically accepts the follow request:
-
-        await ctx.sendActivity(
-            { handle: result.identifier },
-            follower,
-            new Accept({
-                id: new URL(`#accepts/${follower.id.href}`, ctx.getActorUri(result.identifier)),
-                actor: follow.objectId,
-                object: follow
-            }),
-            );
-        await kv.set(["followers", follow.id.href], follow.actorId.href);*/

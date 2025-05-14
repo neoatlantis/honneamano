@@ -17,8 +17,7 @@ import {
     ephermal_encrypt_kv_key,
     ephermal_decrypt_kv_key
 } from "@src/services/crypto/ephermal.ts";
-
-
+import { create_fedify_context } from "@src/services/fedify/federation.ts";
 
 
 export interface FedifyPendingOnFollowRequestsForUser_t {
@@ -84,6 +83,8 @@ export async function make_decision(
         throw Error("Must specify a reference.");
     }
 
+    // retrieve Follow obj
+
     let record: FedifyProcessingRecord_t | null = null;
     try{
         record = await get_record(kvdb_key);
@@ -92,13 +93,21 @@ export async function make_decision(
     }
     if(null == record) return;
 
-    
+    // resume Follow obj
 
-    // retrieve Follow obj
+    const follow: Follow = await Follow.fromJsonLd(
+        _.get(record.context, "follow"));
+    const base_url = _.get(record.context, "url");
+
+    const ctx = await create_fedify_context(base_url);
+    const result = ctx.parseUri(follow.objectId);
+
+    if (result.type !== "actor") throw Error("Attempt to follow a non-actor."); // TODO needs dealing with this kind of malicious follow request, delete maybe?
+    const follower = await follow.getActor(ctx);
+    
     /*
-        const result = ctx.parseUri(follow.objectId);
-        if (result.type !== "actor" || result.identifier !== "admin") return;
-        const follower = await follow.getActor(ctx);
+        
+        
         // Note that if a server receives a `Follow` activity, it should reply
         // with either an `Accept` or a `Reject` activity.  In this case, the
         // server automatically accepts the follow request:

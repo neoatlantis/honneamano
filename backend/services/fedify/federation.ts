@@ -5,8 +5,9 @@ import {
 import _ from "lodash";
 
 let federation_instance: FedifyFederation_t | null = null;
+let baseUrl: string = "";
 
-export default async function get_set_federation(
+export async function get_set_federation(
     creator?: ()=>Promise<FedifyFederation_t>
 ): Promise<FedifyFederation_t>{
 
@@ -20,4 +21,13 @@ export default async function get_set_federation(
 
     federation_instance = await creator();
     return federation_instance;   
+}
+
+export function set_fedify_baseurl(b: string){
+    baseUrl = b;
+}
+
+export async function create_fedify_context(url?: string){
+    let federation = await get_set_federation();
+    return federation.createContext({ url: url?url:baseUrl });
 }

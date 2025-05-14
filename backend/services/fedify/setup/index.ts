@@ -19,7 +19,7 @@ import _ from "lodash";
 
 import setActorDispatcher from "./setActorDispatcher.ts";
 import setKeyPairsDispatcher from "./setKeyPairsDispatcher.ts";
-import get_set_federation from "../federation.ts";
+import { get_set_federation, set_fedify_baseurl } from "../federation.ts";
 import {
     setup_processing,
     create_processing_on_follow,
@@ -27,7 +27,10 @@ import {
 
 
 
-export default async function setup_federation(kvdb: string){
+export default async function setup_federation(
+    kvdb: string,
+    baseurl: string
+){
 
     // use a Deno KV database for storing the list of followers and cache:
     const kv = await Deno.openKv(kvdb);
@@ -39,6 +42,7 @@ export default async function setup_federation(kvdb: string){
         kv: new DenoKvStore(kv),
     })) as FedifyFederation_t;
 
+    set_fedify_baseurl(baseurl);
     await get_set_federation(async function(){
         return federation;
     });
@@ -57,9 +61,8 @@ export default async function setup_federation(kvdb: string){
     federation.setInboxListeners("/users/{identifier}/inbox", "/inbox")
     // The `Follow` activity is handled by adding the follower to the
     // follower list:
-    .on(Follow, (_, follow) => {
-        create_processing_on_follow(follow);
-    })
+    .on(Follow, create_processing_on_follow)
+    
     // The `Undo` activity purposes to undo the previous activity.  In this
     // project, we use the `Undo` activity to represent someone unfollowing
     // this demo app:

@@ -3,7 +3,7 @@ import consola from "consola";
 
 import { config } from "./config.ts";
 
-import get_federation from "@src/services/fedify/federation.ts";
+import { get_set_federation } from "@src/services/fedify/federation.ts";
 import get_app from "@src/services/webui/index.ts";
 import { list_pending_requests as list_pending_follow_requests } from "@src/services/fedify/processing/on_follow/pending_requests.ts";
 
@@ -25,11 +25,11 @@ Deno.serve({ port: config.listen_port }, async (req, info)=>{
         return response;
     }
 
-    const federation = await get_federation();
+    const federation = await get_set_federation();
     if(null === federation){
         return Response.error();
     }
     return await federation.fetch(req, { contextData: undefined });
 });
 
-list_pending_follow_requests()
+//list_pending_follow_requests()

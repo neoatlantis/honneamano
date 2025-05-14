@@ -12,6 +12,9 @@ export default async function startup(config: HonneamanoConfig){
     consola.info("mongodb setup done.");
 
     consola.info("Setting up fedify...");
-    await setup_fedify(config.kvdb);
+    await setup_fedify(
+        config.kvdb,
+        `http://${config.host}`
+    );
     consola.info("fedify setup done.");
 }
