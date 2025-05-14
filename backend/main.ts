@@ -5,6 +5,7 @@ import { config } from "./config.ts";
 
 import get_federation from "@src/services/fedify/federation.ts";
 import get_app from "@src/services/webui/index.ts";
+import { list_pending_requests as list_pending_follow_requests } from "@src/services/fedify/processing/on_follow/pending_requests.ts";
 
 
 import startup from "./startup/index.ts";
@@ -30,3 +31,5 @@ Deno.serve({ port: config.listen_port }, async (req, info)=>{
     }
     return await federation.fetch(req, { contextData: undefined });
 });
+
+list_pending_follow_requests()

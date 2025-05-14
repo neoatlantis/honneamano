@@ -20,6 +20,10 @@ import _ from "lodash";
 import setActorDispatcher from "./setActorDispatcher.ts";
 import setKeyPairsDispatcher from "./setKeyPairsDispatcher.ts";
 import get_set_federation from "../federation.ts";
+import {
+    setup_processing,
+    create_processing_on_follow,
+} from "../processing/index.ts";
 
 
 
@@ -27,6 +31,7 @@ export default async function setup_federation(kvdb: string){
 
     // use a Deno KV database for storing the list of followers and cache:
     const kv = await Deno.openKv(kvdb);
+    await setup_processing(kv);
 
     // A `Federation` object is the main entry point of the Fedify framework.
     // It provides a set of methods to configure and run the federated server:
@@ -52,26 +57,8 @@ export default async function setup_federation(kvdb: string){
     federation.setInboxListeners("/users/{identifier}/inbox", "/inbox")
     // The `Follow` activity is handled by adding the follower to the
     // follower list:
-    .on(Follow, async (ctx, follow) => {
-        if (follow.id == null || follow.actorId == null || follow.objectId == null) {
-            return;
-        }
-        const result = ctx.parseUri(follow.objectId);
-        if (result.type !== "actor" || result.identifier !== "admin") return;
-        const follower = await follow.getActor(ctx);
-        // Note that if a server receives a `Follow` activity, it should reply
-        // with either an `Accept` or a `Reject` activity.  In this case, the
-        // server automatically accepts the follow request:
-        await ctx.sendActivity(
-            { handle: result.identifier },
-            follower,
-            new Accept({
-                id: new URL(`#accepts/${follower.id.href}`, ctx.getActorUri(result.identifier)),
-                actor: follow.objectId,
-                object: follow
-            }),
-            );
-        await kv.set(["followers", follow.id.href], follow.actorId.href);
+    .on(Follow, (_, follow) => {
+        create_processing_on_follow(follow);
     })
     // The `Undo` activity purposes to undo the previous activity.  In this
     // project, we use the `Undo` activity to represent someone unfollowing
